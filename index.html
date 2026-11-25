@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Диагностика семейной системы: Учёба без криков и слёз</title>
+    <!-- Подключение современного шрифта Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            DEFAULT: '#4A69BD',
+                            hover: '#3C55A5',
+                            light: '#F0F4FF',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Анимация плавного появления экранов */
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-[#F4F7FA] text-[#2C3E50] min-h-screen flex items-center justify-center p-4 sm:p-6 antialiased selection:bg-brand selection:text-white">
+
+    <!-- Основной контейнер приложения -->
+    <main class="bg-white w-full max-w-2xl rounded-2xl shadow-xl shadow-slate-200/70 p-6 sm:p-10 relative overflow-hidden border border-slate-100">
+
+        <!-- ЭКРАН 1: ПРИВЕТСТВИЕ -->
+        <section id="screen-start" class="screen active text-center">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-light text-brand mb-6">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-brand leading-tight mb-4">
+                Анализ психоэмоционального климата в учёбе ребёнка
+            </h1>
+            <p class="text-sm sm:text-base text-[#6C7A89] leading-relaxed mb-8 max-w-xl mx-auto">
+                Профессиональная экспресс-диагностика взаимодействия «Родитель — Ребёнок — Школа». 
+                Ответьте на 12 вопросов, чтобы определить глубинную причину учебных конфликтов и уровень истощения вашей нервной системы.
+            </p>
+            <button onclick="startTest()" class="w-full bg-brand hover:bg-brand-hover active:scale-[0.99] text-white font-semibold text-base sm:text-lg py-4 px-6 rounded-xl shadow-md shadow-brand/20 transition-all duration-200 cursor-pointer">
+                Пройти диагностику
+            </button>
+        </section>
+
+        <!-- ЭКРАН 2: ВОПРОСЫ ТЕСТА -->
+        <section id="screen-quiz" class="screen">
+            <!-- Шкала прогресса -->
+            <div class="mb-6">
+                <div class="flex justify-between items-center text-xs sm:text-sm font-semibold text-[#6C7A89] mb-2">
+                    <span>Вопрос <span id="q-current" class="text-brand">1</span> из 12</span>
+                    <span id="q-percent" class="text-brand">8%</span>
+                </div>
+                <div class="w-full h-2.5 bg-[#EBF0F6] rounded-full overflow-hidden">
+                    <div id="progress-fill" class="h-full bg-brand rounded-full transition-all duration-300 ease-out" style="width: 8%;"></div>
+                </div>
+            </div>
+
+            <!-- Текст вопроса -->
+            <h2 id="q-title" class="text-lg sm:text-xl font-semibold text-[#2C3E50] leading-snug mb-6">
+                Загрузка вопроса...
+            </h2>
+
+            <!-- Список вариантов ответа -->
+            <div id="q-options" class="flex flex-col gap-3"></div>
+        </section>
+
+        <!-- ЭКРАН 3: АНИМАЦИЯ АНАЛИЗА -->
+        <section id="screen-loading" class="screen text-center py-10 px-4">
+            <div class="w-12 h-12 border-4 border-[#EBF0F6] border-t-brand rounded-full animate-spin mx-auto mb-6"></div>
+            <h3 class="text-lg sm:text-xl font-bold text-[#2C3E50] mb-2">
+                Анализируем ответы и формируем профиль...
+            </h3>
+            <p class="text-sm sm:text-base text-[#6C7A89] max-w-md mx-auto leading-relaxed">
+                Сопоставляем уровень эмоционального ресурса родителя с паттернами сопротивления ребёнка.
+            </p>
+        </section>
+
+        <!-- ЭКРАН 4: РЕЗУЛЬТАТЫ ДИАГНОСТИКИ -->
+        <section id="screen-result" class="screen">
+            <h2 class="text-xl sm:text-2xl font-bold text-center text-[#2C3E50] mb-6">
+                Результаты психологического анализа
+            </h2>
+
+            <!-- Две карточки индикаторов -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <!-- Индикатор 1: Родительский ресурс -->
+                <div class="bg-[#F8FAFC] p-5 rounded-xl border border-slate-200 text-center flex flex-col justify-center">
+                    <span class="text-xs sm:text-sm font-medium text-[#6C7A89]">Родительский ресурс</span>
+                    <div id="val-resource" class="text-3xl sm:text-4xl font-bold my-2" style="color: #E67E22;">0%</div>
+                    <span id="lbl-resource" class="text-xs sm:text-sm font-semibold text-[#6C7A89]">Анализ...</span>
+                </div>
+
+                <!-- Индикатор 2: Уровень сопротивления ребёнка -->
+                <div class="bg-[#F8FAFC] p-5 rounded-xl border border-slate-200 text-center flex flex-col justify-center">
+                    <span class="text-xs sm:text-sm font-medium text-[#6C7A89]">Уровень сопротивления ребёнка</span>
+                    <div id="val-resistance" class="text-3xl sm:text-4xl font-bold my-2" style="color: #E74C3C;">0%</div>
+                    <span id="lbl-resistance" class="text-xs sm:text-sm font-semibold text-[#6C7A89]">Анализ...</span>
+                </div>
+            </div>
+
+            <!-- Блок экспертного заключения -->
+            <div id="analysis-box" class="bg-[#F0F4FF] border-l-4 border-brand p-5 rounded-r-xl mb-6 text-sm sm:text-base leading-relaxed transition-colors duration-300">
+                <h3 id="analysis-heading" class="font-bold text-base sm:text-lg text-brand mb-2">
+                    Экспертное заключение:
+                </h3>
+                <p id="analysis-text" class="text-[#2C3E50]">
+                    Формирование вывода...
+                </p>
+            </div>
+
+            <!-- Карточка целевого действия (CTA) -->
+            <div id="cta-card" class="bg-white border-2 border-brand rounded-2xl p-6 text-center transition-colors duration-300 shadow-sm">
+                <h4 id="cta-title" class="text-lg sm:text-xl font-bold text-[#2C3E50] mb-3">
+                    Необходима индивидуальная коррекция
+                </h4>
+                <p id="cta-desc" class="text-sm sm:text-base text-[#6C7A89] leading-relaxed mb-6">
+                    Автоматический тест подсвечивает точки напряжения, но не заменяет работы с причинами. 
+                    В вашей ситуации важно разобрать глубокие сценарии взаимодействия и вернуть вам эмоциональную устойчивость.
+                </p>
+                <a id="cta-btn" href="https://max.ru/u/f9LHodD0cOLAxO6H7MaTwawELvS7VzHrxurl1OxQiyj2arBhb3pk-3jEwJE" target="_blank" rel="noopener noreferrer" class="block w-full bg-[#27AE60] hover:bg-[#219653] active:scale-[0.99] text-white font-bold text-base sm:text-lg py-4 px-6 rounded-xl shadow-md shadow-emerald-600/20 transition-all duration-200">
+                    Записаться на консультацию
+                </a>
+            </div>
+
+            <!-- Кнопка для повторного тестирования при проверке -->
+            <div class="mt-5 text-center">
+                <button onclick="resetTest()" class="text-xs sm:text-sm text-[#6C7A89] hover:text-brand underline underline-offset-4 transition-colors cursor-pointer">
+                    Пройти диагностику заново
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // База из 12 психологических вопросов
+        // scoreR — баллы выгорания/напряжения родителя (max = 31)
+        // scoreRes — баллы сопротивления/стресса ребёнка (max = 29)
+        const questions = [
+            {
+                title: "1. Как обычно начинается процесс выполнения домашнего задания у вас дома?",
+                options: [
+                    { text: "Ребёнок садится сам или после одного спокойного напоминания.", scoreR: 0, scoreRes: 0 },
+                    { text: "Приходится напоминать несколько раз, возникают вздохи, оттягивание времени.", scoreR: 1, scoreRes: 1 },
+                    { text: "Процесс начинается с уговоров, споров, торгов или явного протеста.", scoreR: 2, scoreRes: 2 },
+                    { text: "Каждый вечер — это конфликт, слёзы или полный отказ делать уроки.", scoreR: 2, scoreRes: 3 }
+                ]
+            },
+            {
+                title: "2. Что вы чувствуете телесно и эмоционально, когда понимаете, что впереди вечер уроков?",
+                options: [
+                    { text: "Спокойствие и нейтральное отношение.", scoreR: 0, scoreRes: 0 },
+                    { text: "Лёгкое напряжение или внутреннее желание быстрее с этим закончить.", scoreR: 1, scoreRes: 0 },
+                    { text: "Тяжесть, глухое раздражение или ощущение безысходности.", scoreR: 2, scoreRes: 1 },
+                    { text: "Сильную тревогу, ком в горле или готовность «взорваться» от любой мелочи.", scoreR: 3, scoreRes: 1 }
+                ]
+            },
+            {
+                title: "3. Какова ваша роль при выполнении школьных заданий?",
+                options: [
+                    { text: "Наблюдатель: помогаю только по личной просьбе ребёнка.", scoreR: 0, scoreRes: 0 },
+                    { text: "Контролёр: регулярно проверяю тетради и указываю на ошибки.", scoreR: 1, scoreRes: 1 },
+                    { text: "Учитель: сижу рядом, разжёвываю каждый шаг, так как сам(а) не справляется.", scoreR: 2, scoreRes: 2 },
+                    { text: "«Надзиратель»: без моего сидения «над душой» не будет сделано ничего.", scoreR: 3, scoreRes: 3 }
+                ]
+            },
+            {
+                title: "4. Как ребёнок реагирует на ошибочные ответы или ваши замечания?",
+                options: [
+                    { text: "Спокойно исправляет ошибки.", scoreR: 0, scoreRes: 0 },
+                    { text: "Огорчается, но продолжать работу соглашается.", scoreR: 1, scoreRes: 1 },
+                    { text: "Замыкается, бросает ручку, говорит: «Я тупой» или «Ничего делать не буду».", scoreR: 2, scoreRes: 3 },
+                    { text: "Проявляет яркую агрессию (кричит, рвёт тетради, хлопает дверью).", scoreR: 2, scoreRes: 3 }
+                ]
+            },
+            {
+                title: "5. Если ребёнок получает плохую оценку или замечание в школе, какова ваша первая реакция?",
+                options: [
+                    { text: "Анализирую причину вместе с ребёнком без лишних эмоций.", scoreR: 0, scoreRes: 0 },
+                    { text: "Испытываю досаду, но стараюсь не проявлять жёсткости.", scoreR: 1, scoreRes: 1 },
+                    { text: "Чувствую стыд, тревогу за его будущее или раздражение на ребёнка.", scoreR: 2, scoreRes: 2 },
+                    { text: "Впадаю в отчаяние или устраиваю серьёзный разбор полётов с наказаниями.", scoreR: 3, scoreRes: 2 }
+                ]
+            },
+            {
+                title: "6. Оцените уровень познавательного интереса (мотивации) вашего ребёнка:",
+                options: [
+                    { text: "Учится с интересом, есть любимые предметы.", scoreR: 0, scoreRes: 0 },
+                    { text: "Учится ради оценок, похвалы или чтобы «не ругали».", scoreR: 1, scoreRes: 1 },
+                    { text: "Учёба воспринимается как тяжёлая и бессмысленная обязанность.", scoreR: 1, scoreRes: 2 },
+                    { text: "Полный саботаж, демонстративное нежелание учиться.", scoreR: 2, scoreRes: 3 }
+                ]
+            },
+            {
+                title: "7. Насколько часто в течение недели вы срываетесь на крик или повышение тона?",
+                options: [
+                    { text: "Крайне редко или никогда.", scoreR: 0, scoreRes: 0 },
+                    { text: "1–2 раза в неделю при сильной усталости.", scoreR: 1, scoreRes: 1 },
+                    { text: "Практически каждый день во время уроков или бытовых дел.", scoreR: 2, scoreRes: 2 },
+                    { text: "Крик стал единственным способом заставить ребёнка услышать меня.", scoreR: 3, scoreRes: 3 }
+                ]
+            },
+            {
+                title: "8. Есть ли у вас время и ресурс на общение с ребёнком, НЕ связанное со школой и обязанностями?",
+                options: [
+                    { text: "Да, ежедневно качественно и с удовольствием проводим время вместе.", scoreR: 0, scoreRes: 0 },
+                    { text: "Периодически по выходным, в будни выматывают быт и школа.", scoreR: 1, scoreRes: 1 },
+                    { text: "Очень мало, почти все разговоры сводятся к урокам и оценкам.", scoreR: 2, scoreRes: 2 },
+                    { text: "Общения почти нет, любые контакты вызывают напряжение.", scoreR: 3, scoreRes: 3 }
+                ]
+            },
+            {
+                title: "9. Чувствуете ли вы гиперответственность или чувство вины за успехи/неудачи ребёнка?",
+                options: [
+                    { text: "Нет, я понимаю, что учёба — это зона ответственности ребёнка.", scoreR: 0, scoreRes: 0 },
+                    { text: "Иногда кажется, что я «недорабатываю» как родитель.", scoreR: 1, scoreRes: 1 },
+                    { text: "Часто воспринимаю его тройки и двойки как свой личный провал.", scoreR: 2, scoreRes: 1 },
+                    { text: "Постоянно живу с чувством вины и страхом за его будущее.", scoreR: 3, scoreRes: 2 }
+                ]
+            },
+            {
+                title: "10. Каково ваше общее самочувствие к концу рабочего дня?",
+                options: [
+                    { text: "Сохраняю бодрость и хорошее настроение.", scoreR: 0, scoreRes: 0 },
+                    { text: "Обычная усталость, которая проходит после короткого отдыха.", scoreR: 1, scoreRes: 0 },
+                    { text: "Сильное истощение, сил на близких практически не остаётся.", scoreR: 2, scoreRes: 1 },
+                    { text: "Апатия, хроническое выгорание, желание «чтобы все оставили в покое».", scoreR: 3, scoreRes: 2 }
+                ]
+            },
+            {
+                title: "11. Проявляются ли у ребёнка косвенные признаки стресса (невротические проявления)?",
+                options: [
+                    { text: "Нет, ребёнок эмоционально стабилен и хорошо спит.", scoreR: 0, scoreRes: 0 },
+                    { text: "Иногда жалуется на усталость или боль в животе/голове перед школой.", scoreR: 1, scoreRes: 1 },
+                    { text: "Нарушения сна, грызение ногтей, кручение волос, частые смены настроения.", scoreR: 2, scoreRes: 2 },
+                    { text: "Выраженная психосоматика (частые болезни), регулярные истерики, замыкание в себе.", scoreR: 2, scoreRes: 3 }
+                ]
+            },
+            {
+                title: "12. Помогают ли ваши душевные разговоры, нотации или убеждения изменить ситуацию с учёбой?",
+                options: [
+                    { text: "Да, мы легко находим взаимопонимание.", scoreR: 0, scoreRes: 0 },
+                    { text: "Разговоры помогают, но ненадолго — через пару дней всё возвращается.", scoreR: 1, scoreRes: 1 },
+                    { text: "Разговоры превращаются в мои монологи, ребёнок молчит и «уходит в себя».", scoreR: 2, scoreRes: 2 },
+                    { text: "Любые попытки поговорить о школе вызывают скандал и рождают стену.", scoreR: 3, scoreRes: 3 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let totalScoreR = 0;   // Баллы стресса родителя
+        let totalScoreRes = 0; // Баллы сопротивления ребёнка
+
+        // Переключение экранов
+        function switchScreen(hideId, showId) {
+            document.getElementById(hideId).classList.remove('active');
+            document.getElementById(showId).classList.add('active');
+        }
+
+        // Запуск теста
+        function startTest() {
+            currentQuestion = 0;
+            totalScoreR = 0;
+            totalScoreRes = 0;
+            switchScreen('screen-start', 'screen-quiz');
+            showQuestion();
+        }
+
+        // Сброс и повторное прохождение
+        function resetTest() {
+            currentQuestion = 0;
+            totalScoreR = 0;
+            totalScoreRes = 0;
+            switchScreen('screen-result', 'screen-start');
+        }
+
+        // Отрисовка текущего вопроса и вариантов ответа
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('q-current').innerText = currentQuestion + 1;
+
+            const percent = Math.round(((currentQuestion + 1) / questions.length) * 100);
+            document.getElementById('q-percent').innerText = percent + '%';
+            document.getElementById('progress-fill').style.width = percent + '%';
+
+            document.getElementById('q-title').innerText = q.title;
+
+            const optionsBox = document.getElementById('q-options');
+            optionsBox.innerHTML = '';
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'option-btn w-full bg-[#F8FAFC] hover:bg-[#F0F4FF] border-2 border-slate-200 hover:border-brand active:scale-[0.99] p-4 rounded-xl text-left text-sm sm:text-base text-[#2C3E50] transition-all duration-150 leading-snug cursor-pointer';
+                btn.innerText = opt.text;
+                btn.onclick = () => selectOption(opt.scoreR, opt.scoreRes);
+                optionsBox.appendChild(btn);
+            });
+        }
+
+        // Обработка выбора ответа
+        function selectOption(sR, sRes) {
+            totalScoreR += sR;
+            totalScoreRes += sRes;
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        // Экран загрузки перед выдачей результата
+        function finishQuiz() {
+            switchScreen('screen-quiz', 'screen-loading');
+
+            setTimeout(() => {
+                switchScreen('screen-loading', 'screen-result');
+                renderResults();
+            }, 1500);
+        }
+
+        // Расчёт процентов и формирование экспертного заключения
+        function renderResults() {
+            const maxR = 31;
+            const maxRes = 29;
+
+            // Ресурс родителя (обратная шкала: чем меньше стресса, тем выше ресурс)
+            const resourcePercent = Math.max(5, Math.round(100 - (totalScoreR / maxR * 100)));
+            // Уровень сопротивления ребёнка (прямая шкала)
+            const resistancePercent = Math.min(98, Math.round((totalScoreRes / maxRes * 100)));
+
+            const valResourceEl = document.getElementById('val-resource');
+            const lblResourceEl = document.getElementById('lbl-resource');
+            valResourceEl.innerText = resourcePercent + '%';
+
+            if (resourcePercent < 35) {
+                lblResourceEl.innerText = "Критическое выгорание";
+                valResourceEl.style.color = "#E74C3C";
+            } else if (resourcePercent < 65) {
+                lblResourceEl.innerText = "Опасное истощение";
+                valResourceEl.style.color = "#E67E22";
+            } else {
+                lblResourceEl.innerText = "Норма ресурсности";
+                valResourceEl.style.color = "#2ECC71";
+            }
+
+            const valResistanceEl = document.getElementById('val-resistance');
+            const lblResistanceEl = document.getElementById('lbl-resistance');
+            valResistanceEl.innerText = resistancePercent + '%';
+
+            if (resistancePercent > 65) {
+                lblResistanceEl.innerText = "Высокий протест";
+                valResistanceEl.style.color = "#E74C3C";
+            } else if (resistancePercent > 35) {
+                lblResistanceEl.innerText = "Умеренное напряжение";
+                valResistanceEl.style.color = "#E67E22";
+            } else {
+                lblResistanceEl.innerText = "Гармоничная учёба";
+                valResistanceEl.style.color = "#2ECC71";
+            }
+
+            const analysisBox = document.getElementById('analysis-box');
+            const analysisHeading = document.getElementById('analysis-heading');
+            const analysisText = document.getElementById('analysis-text');
+            const ctaCard = document.getElementById('cta-card');
+            const ctaTitle = document.getElementById('cta-title');
+            const ctaDesc = document.getElementById('cta-desc');
+            const ctaBtn = document.getElementById('cta-btn');
+
+            // ЗЕЛЁНАЯ ЗОНА: Родительский ресурс >= 65% и Сопротивление <= 35%
+            if (resourcePercent >= 65 && resistancePercent <= 35) {
+                analysisBox.style.backgroundColor = "#EBF9F1";
+                analysisBox.style.borderLeftColor = "#2ECC71";
+                analysisHeading.style.color = "#27AE60";
+                analysisText.innerHTML = "У вас сформирована <strong>здоровая и устойчивая семейная система</strong>. Вы умеете сохранять личный эмоциональный ресурс и выстраивать конструктивный диалог вокруг школы без разрушительного давления и срывов.";
+
+                ctaCard.style.borderColor = "#2ECC71";
+                ctaTitle.innerHTML = "💡 Стратегия развития и раскрытия потенциала";
+                ctaDesc.innerHTML = "Поздравляем! Вы отлично справляетесь с текущей школьной нагрузкой. Следующий шаг — <strong>как превратить академическую стабильность в успехи в жизни, карьере и Soft Skills</strong>, а также мягко подготовиться к возрастным переходам (подростковый этап, экзамены, выбор пути). На стратегической консультации мы наметим индивидуальный вектор развития сильных сторон вашего ребёнка.";
+                ctaBtn.innerText = "Записаться на стратегическую консультацию";
+            } 
+            // ЖЁЛТАЯ И КРАСНАЯ ЗОНЫ
+            else {
+                analysisBox.style.backgroundColor = "#F0F4FF";
+                analysisBox.style.borderLeftColor = "#4A69BD";
+                analysisHeading.style.color = "#4A69BD";
+
+                if (resourcePercent < 45 && resistancePercent > 50) {
+                    analysisText.innerHTML = "Вы находитесь в состоянии <strong>«Замкнутого круга выгорания»</strong>. Ваши собственные силы и нервная система находятся в глубоком дефиците, в то время как ребёнок проявляет сильное защитное сопротивление учёбе. На этом этапе любые стандартные методы (уговоры, наказания, нотации) лишь усиливают стену между вами и истощают вас ещё сильнее.";
+                } else if (resourcePercent < 45) {
+                    analysisText.innerHTML = "Ваша главная точка напряжения сейчас — <strong>сильное эмоциональное истощение</strong>. Ребёнок ещё не ушёл в глухой саботаж, но ваша нервная система с трудом выдерживает нагрузки. Чтобы сохранить психологическое здоровье и восстановить мотивацию ребёнка, начинать работу нужно с восстановления вашего личного ресурса.";
+                } else if (resistancePercent > 50) {
+                    analysisText.innerHTML = "У вас ещё сохраняется родительский ресурс, но ребёнок находится в состоянии <strong>высокого психологического протеста или перегрузки</strong>. Его крики, слёзы и леность — это не злой умысел, а защита нервной системы. Требуется точечная коррекция семейной коммуникации вокруг школы.";
+                } else {
+                    analysisText.innerHTML = "Ваша семейная система справляется с базовыми нагрузками, однако уже присутствуют <strong>локальные точки напряжения</strong> во время домашних заданий. Чтобы ситуация не переросла в хроническое выгорание при усложнении программы, важно вовремя скорректировать привычные сценарии взаимодействия.";
+                }
+
+                ctaCard.style.borderColor = "#4A69BD";
+                ctaTitle.innerText = "Необходима индивидуальная коррекция";
+                ctaDesc.innerHTML = "Автоматический тест подсвечивает точки напряжения, но не заменяет работы с причинами. В вашей ситуации важно разобрать глубокие сценарии взаимодействия и вернуть вам эмоциональную устойчивость.";
+                ctaBtn.innerText = "Записаться на консультацию";
+            }
+        }
+    </script>
+</body>
+</html>
